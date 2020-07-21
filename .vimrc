@@ -7,9 +7,6 @@ call plug#begin()
 Plug 'itchyny/lightline.vim'
 Plug 'machakann/vim-highlightedyank'
 Plug 'airblade/vim-rooter'
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-tmux'
-Plug 'ncm2/ncm2-path'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'dense-analysis/ale'
@@ -18,18 +15,22 @@ Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
     \ }
+
 Plug 'rust-lang/rust.vim'
 Plug 'stephpy/vim-yaml'
 Plug 'cespare/vim-toml'
 Plug 'chriskempson/base16-vim'
+Plug 'antoyo/vim-licenses'
 Plug 'maximbaz/lightline-ale'
 Plug 'mustache/vim-mustache-handlebars'
+Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 call plug#end()
 
 filetype plugin indent on
 
 syntax on
-set number
+set number relativenumber
+set nu rnu
 set ruler
 set wrap
 set tabstop=4
@@ -44,15 +45,57 @@ inoremap <C-f> <esc>:NERDTreeToggle<CR>
 
 " base 16 theme
 set t_Co=256
-let base16colorspace=256 
+let base16colorspace=256
 set termguicolors
-colorscheme base16-default-dark
+colorscheme base16-atelier-dune
+
+
+" vim licenses config
+let g:licenses_copyright_holders_name = "vtewari <vtewari26@gmail.com>"
+let g:licenses_authors_name = "vtewari <vtewari26@gmail.com>"
+command! License call InsertLicense('licenseFile')
 
 " Light Line
 let g:lightline = {
-\	'colorscheme': 'darcula',
+\       'colorscheme': 'darcula',
 \}
 set laststatus=2
+
+
+" Coc Config
+set hidden
+set nobackup
+set nowritebackup
+set shortmess+=c
+set updatetime=300
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+
 
 " Rust Formatting
 let g:rustfmt_autosave=1
@@ -64,17 +107,20 @@ map q: :q
 nmap <C-q> :q
 nmap <C-a> @a
 
+" <leader><leader> toggles between buffers
+nnoremap <leader><leader> <c-^>
+
 " ale
 " Linter
 let g:ale_linters = {
-\	'javascript': ['eslint'],
-\   'rust': ['rustc'],
-\	'c': ['clangtidy']
+\       'javascript': ['eslint'],
+\   'rust': ['cargo', 'rls'],
+\       'c': ['clangtidy']
 \ }
 
-let g:ale_fixers = {
-\	'c': ['clang-format']
-\}
+" let g:ale_fixers = {
+" \     'c': ['clang-format']
+" \}
 let g:ale_sign_column_always = 1
 " only lint on save
 let g:ale_lint_on_text_changed = 'always'
@@ -102,9 +148,11 @@ function! s:list_cmd()
   return base == '.' ? 'fd --type file --follow' : printf('fd --type file --follow | proximity-sort %s', expand('%'))
 endfunction
 
-" Auto Complete
-" autocmd BufEnter * call ncm2#enable_for_buffer()
-" set completeopt=noinsert,menuone,noselect
+if executable('rg')
+        set grepprg=rg\ --no-heading\ --vimgrep
+        set grepformat=%f:%l:%c:%m
+endif
+
 
 " Left and right can switch buffers
 nnoremap <C-left> :bp<CR>
