@@ -7,15 +7,14 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'itchyny/lightline.vim'
 Plug 'machakann/vim-highlightedyank'
 Plug 'airblade/vim-rooter'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
 Plug 'dense-analysis/ale'
 Plug 'scrooloose/nerdtree'
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
     \ }
-
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'stephpy/vim-yaml'
@@ -25,11 +24,12 @@ Plug 'antoyo/vim-licenses'
 Plug 'maximbaz/lightline-ale'
 Plug 'mustache/vim-mustache-handlebars'
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 call plug#end()
 
 filetype plugin indent on
 
-syntax on
+syntax enable
 set number relativenumber
 set nu rnu
 set ruler
@@ -92,6 +92,11 @@ endfunction
 
 " Use <c-space> to trigger completion.
 inoremap <silent><expr> <c-space> coc#refresh()
+
+" setup code folding
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+set nofoldenable
 
 
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
