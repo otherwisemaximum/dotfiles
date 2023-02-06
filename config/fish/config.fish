@@ -1,14 +1,15 @@
-set -gx PATH $HOME/bin $PATH
-set -gx PATH $HOME/.deno/bin $PATH
-set -gx PATH $HOME/.nvm/versions/node/v10.19.0/bin $PATH
 set -gx EDITOR nvim
 
-# GO Setup
-set -gx PATH $HOME/tools/lang/go/current/bin $PATH
+set -gx PATH /opt/homebrew/bin $PATH
 set -gx GOPATH $HOME/go
 set -gx PATH $GOPATH/bin $PATH
+set -gx PATH $HOME/.cargo/bin $PATH
+set -gx PATH $HOME/.bin $PATH
+set -gx PATH $HOME/.nvm/versions/node/v16.15.0/bin $PATH
+set -gx PATH /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin $PATH
+set -gx PATH /opt/homebrew/opt/postgresql@15/bin $PATH
+set -gx PATH /Users/Varun/Library/Python/3.9/bin $PATH
 
-alias vim nvim
 
 # Fish git prompt
 set __fish_git_prompt_showuntrackedfiles 'yes'
@@ -44,3 +45,7 @@ function fish_prompt
 	echo -n '| '
 	set_color normal
 end
+
+alias v "nvim"
+alias vim "nvim"
+source  $HOME/.config/fish/custom-alias.fish
